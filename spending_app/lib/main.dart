@@ -4,6 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:spending_app/AddExpense.dart';
 import 'package:spending_app/Expense.dart';
 import 'package:spending_app/ExpensesModel.dart';
+import 'package:spending_app/Month.dart';
 import 'AddExpense.dart';
 import 'EditExpense.dart';
 
@@ -20,14 +21,29 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.cyan,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Spending App'),
     );
   }
 }
-
 class MyHomePage extends StatelessWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
+  List<Month> month = [
+    Month(0, "All Month"),
+    Month(1, "January"),
+    Month(2, "February"),
+    Month(3, "March"),
+    Month(4, "April"),
+    Month(5, "May"),
+    Month(6, "June"),
+    Month(7, "July"),
+    Month(8, "August"),
+    Month(9, "September"),
+    Month(10, "October"),
+    Month(11, "November"),
+    Month(12, "December"),
+  ];
+  Month dropdownValue;
   final String title;
 
   @override
@@ -37,7 +53,34 @@ class MyHomePage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(title),
+          actions: <Widget>[
+            ScopedModelDescendant<ExpensesModel>(
+              builder: (context, child, model) => DropdownButton<Month>(
+                value: dropdownValue,
+                hint: Text("Select Month"),
+                icon: Icon(Icons.arrow_downward),
+                iconSize: 24,
+                elevation: 16,
+                style: TextStyle(color: Colors.deepPurple),
+                underline: Container(
+                  height: 2,
+                  color: Colors.deepPurpleAccent,
+                ),
+                onChanged: (Month newValue) {
+                  dropdownValue = newValue;
+                  model.FilterList(newValue.id);
+                },
+                items: month.map((Month value) {
+                  return DropdownMenuItem<Month>(
+                    value: value,
+                    child: Text(value.name),
+                  );
+                }).toList(),
+              ),
+            )
+          ],
         ),
+
         body: ScopedModelDescendant<ExpensesModel>(
           builder: (context, child, model) =>
               ListView.separated(
@@ -50,6 +93,10 @@ class MyHomePage extends StatelessWidget {
                       --index;
                       return Dismissible(
                         key: Key(model.GetKey(index)),
+                        background: Container(
+                          alignment: AlignmentDirectional.centerEnd,
+                          color: Colors.red,
+                          ),
                         onDismissed: (direction) {
                           model.RemoveAt(index);
                           Scaffold.of(context).showSnackBar(SnackBar(
@@ -61,7 +108,7 @@ class MyHomePage extends StatelessWidget {
                         },
                         child: ListTile(
                             title: Text(model.GetText(index)),
-                            leading:  IconButton(
+                            leading: IconButton(
                               icon: Icon(Icons.delete),
                               tooltip: 'Delete record',
                               onPressed: () async {
@@ -85,6 +132,17 @@ class MyHomePage extends StatelessWidget {
                             );
                           },
                         ),
+                        onTap: () async {
+                          Navigator.push(
+                              context, MaterialPageRoute(builder: (context) {
+                            return EditExpense(model);
+                          },
+                            settings: RouteSettings(
+                              arguments: model.GetList(index),
+                            ),
+                          )
+                          );
+                        },
                         ),
                       );
                     }
@@ -93,19 +151,17 @@ class MyHomePage extends StatelessWidget {
                   itemCount: model.recordsCount + 1),
         ),
         floatingActionButton: ScopedModelDescendant<ExpensesModel>(
-          builder: (context, child, model) =>
-              FloatingActionButton(
-                  onPressed: () {
-                    //model.AddExpense("Apple", 10);
-                    Navigator.push(
-                        context, MaterialPageRoute(builder: (context) {
-                      return AddExpense(model);
-                    },
-                    )
-                    )
-                    ;
+          builder: (context, child, model) => FloatingActionButton(
+              tooltip: "Add record",
+              onPressed: () {
+                //model.AddExpense("Apple", 10);
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) {
+                    return AddExpense(model);
                   },
-                  child: Icon(Icons.add)),
+                ));
+              },
+              child: Icon(Icons.add)),
         ),
       ),
     );
@@ -132,5 +188,4 @@ class MyHomePage extends StatelessWidget {
         );
       },
     );
-
 }

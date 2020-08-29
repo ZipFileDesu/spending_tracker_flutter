@@ -61,10 +61,11 @@ class ExpenseDB {
     await db.rawDelete("DELETE FROM Expenses WHERE id = \"$idAsString\"");
   }
 
-  Future<void> editExpense(String id, String name, double price) async {
+  Future<void> editExpense(String id, String name, double price, DateTime date) async {
     developer.log(id.toString());
     Database db = await database;
-    await db.rawUpdate("UPDATE Expenses SET name = \"$name\", price = \"$price\" "
-        "WHERE id = \"$id\"");
+    var dateAsString = date.toString();
+    await db.rawUpdate("UPDATE Expenses SET name = \"$name\", price = \"$price\", "
+        "date = \"$date\" WHERE id = \"$id\"");
   }
 }
