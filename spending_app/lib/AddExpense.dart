@@ -19,6 +19,7 @@ class _AddExpenseState extends State<AddExpense> {
 
   @override
   Widget build(BuildContext context) {
+    double screen_width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: Text("Add Expense"),
@@ -33,7 +34,7 @@ class _AddExpenseState extends State<AddExpense> {
                   children: <Widget>[
                     Expanded(child: Text("Value")),
                     SizedBox(
-                      width: 280,
+                      width: screen_width / (3 / 2),
                       child: TextFormField(
                         autovalidate: true,
                         initialValue: "0",
@@ -56,7 +57,7 @@ class _AddExpenseState extends State<AddExpense> {
                 children: <Widget>[
                   Expanded(child: Text("Name")),
                   SizedBox(
-                    width: 280,
+                    width: screen_width / (3 / 2),
                     child: TextFormField(
                       onSaved: (value) {
                         _name = value;
@@ -70,7 +71,7 @@ class _AddExpenseState extends State<AddExpense> {
                 children: <Widget>[
                   Expanded(child: Text("Date")),
                   SizedBox(
-                    width: 280,
+                    width: screen_width / (3 / 2),
                     child: DateTimeField(
                       format: format,
                       initialValue: _dateTime,

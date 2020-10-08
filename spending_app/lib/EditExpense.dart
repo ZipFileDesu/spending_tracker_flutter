@@ -14,12 +14,13 @@ class _EditExpenseState extends State<EditExpense> {
   Expense expense;
   final format = DateFormat("dd-MM-yyyy");
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   _EditExpenseState(this._model);
 
   @override
   Widget build(BuildContext context) {
     expense = ModalRoute.of(context).settings.arguments;
+    double screen_width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Edit Expense"),
@@ -34,7 +35,7 @@ class _EditExpenseState extends State<EditExpense> {
               children: <Widget>[
                 Expanded(child: Text("Value")),
                 SizedBox(
-                  width: 280,
+                  width: screen_width / (3 / 2),
                   child: TextFormField(
                     autovalidate: true,
                     initialValue: expense.price.toString(),
@@ -58,7 +59,7 @@ class _EditExpenseState extends State<EditExpense> {
                 children: <Widget>[
                   Expanded(child: Text("Name")),
                   SizedBox(
-                    width: 280,
+                    width: screen_width / (3 / 2),
                     child: TextFormField(
                     initialValue: expense.name,
                     onSaved: (value) {
@@ -73,7 +74,7 @@ class _EditExpenseState extends State<EditExpense> {
                 children: <Widget>[
                   Expanded(child: Text("Date")),
                   SizedBox(
-                    width: 280,
+                    width: screen_width / (3 / 2),
                     child: DateTimeField(
                       format: format,
                       initialValue: expense.date,
