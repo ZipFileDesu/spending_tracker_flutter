@@ -6,7 +6,6 @@ import 'package:spending_app/Expense.dart';
 import 'package:spending_app/ExpensesModel.dart';
 import 'package:spending_app/Month.dart';
 import 'AddExpense.dart';
-import 'EditExpense.dart';
 
 void main() {
   runApp(MyApp());
@@ -123,7 +122,7 @@ class MyHomePage extends StatelessWidget {
                           onPressed: () async {
                             Navigator.push(
                                 context, MaterialPageRoute(builder: (context) {
-                              return EditExpense(model);
+                              return AddExpense(model);
                             },
                               settings: RouteSettings(
                                 arguments: model.GetList(index),
@@ -135,7 +134,7 @@ class MyHomePage extends StatelessWidget {
                         onTap: () async {
                           Navigator.push(
                               context, MaterialPageRoute(builder: (context) {
-                            return EditExpense(model);
+                            return AddExpense(model);
                           },
                             settings: RouteSettings(
                               arguments: model.GetList(index),

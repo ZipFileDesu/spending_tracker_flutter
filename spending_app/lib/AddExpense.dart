@@ -5,24 +5,26 @@ import 'package:spending_app/Expense.dart';
 import 'package:spending_app/ExpensesModel.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'dart:developer' as developer;
 
 class _AddExpenseState extends State<AddExpense> {
   double _price;
   String _name;
   DateTime _dateTime = DateTime.now();
   ExpensesModel _model;
+  Expense expense;
   final format = DateFormat("dd-MM-yyyy");
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-
   _AddExpenseState(this._model);
 
   @override
   Widget build(BuildContext context) {
+    expense = ModalRoute.of(context).settings.arguments;
     double screen_width = MediaQuery.of(context).size.width;
+    //developer.log(expense);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add Expense"),
+        title: Text(expense != null ? "Edit Expense" : "Add Expense"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(40.0),
@@ -37,7 +39,7 @@ class _AddExpenseState extends State<AddExpense> {
                       width: screen_width / (3 / 2),
                       child: TextFormField(
                         autovalidate: true,
-                        initialValue: "0",
+                        initialValue: expense != null ? expense.price.toString() : "0",
                         keyboardType: TextInputType.number,
                         onSaved: (value) {
                           _price = double.parse(value);
@@ -59,6 +61,7 @@ class _AddExpenseState extends State<AddExpense> {
                   SizedBox(
                     width: screen_width / (3 / 2),
                     child: TextFormField(
+                      initialValue: expense != null ? expense.name : "",
                       onSaved: (value) {
                         _name = value;
                       },
@@ -74,7 +77,7 @@ class _AddExpenseState extends State<AddExpense> {
                     width: screen_width / (3 / 2),
                     child: DateTimeField(
                       format: format,
-                      initialValue: _dateTime,
+                      initialValue: expense != null ? expense.date : _dateTime,
                       onShowPicker: (context, currentValue) {
                         //print(currentValue);
                         //_dateTime = currentValue;
@@ -93,7 +96,12 @@ class _AddExpenseState extends State<AddExpense> {
               ),
               RaisedButton(
                 onPressed: () {
-                  if (_formKey.currentState.validate()) {
+                  if (_formKey.currentState.validate() && expense != null) {
+                    _formKey.currentState.save();
+                    _model.EditExpense(expense.id.toString(), _name, _price, _dateTime);
+                    Navigator.pop(context);
+                  }
+                  else if (_formKey.currentState.validate()) {
                     _formKey.currentState.save();
                     _model.AddExpense(_name, _price, _dateTime);
                     Navigator.pop(context);
